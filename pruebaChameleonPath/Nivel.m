@@ -73,7 +73,6 @@
                     matrix[x][y] = 0;
             }
         }
-        
 	}
 	return self;
 }
