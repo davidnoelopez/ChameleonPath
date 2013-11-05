@@ -59,6 +59,7 @@
         
         for (int x = 0; x < 24; x++) {
             for (int y = 0; y < 16; y++) {
+                mat[x][y] = matrix[x][y];
                 int selectedTile = 0;
                 Pared *auxPared = [_tiles objectAtIndex:selectedTile];
                 
@@ -67,12 +68,29 @@
                 if (matrix[x][y] == 1) {
                     tile.position = ccp(x*20+tile.contentSize.width/2,y*20+tile.contentSize.height/2);
                     //tile.position = ccp(0,0);
-                    [self addChild:tile z:1];
+                    [self addChild:tile z:0];
                 }
-                else
-                    matrix[x][y] = 0;
+                else if (matrix[x][y] == 9){
+                    xCam = x;
+                    yCam = y;
+                }
+                else if (matrix[x][y] == 8){
+                    llave = [CCSprite spriteWithFile:@"Key.png"];
+                    llave.position = ccp(x*20+llave.contentSize.width/2,y*20+llave.contentSize.height/2);
+                    [self addChild:llave z:1];
+                }
+                else if (matrix[x][y] == 7){
+                    estrella = [CCSprite spriteWithFile:@"star.png"];
+                    estrella.position = ccp(x*20+estrella.contentSize.width/2,y*20+estrella.contentSize.height/2);
+                    [self addChild:estrella z:1];
+                }
             }
         }
+        camaleon = [CCSprite spriteWithFile:@"camaleon.png"];
+        camaleon.position =  ccp(xCam*20+camaleon.contentSize.width/2,yCam*20+camaleon.contentSize.height/2);
+        
+        // add the label as a child to this Layer
+        [self addChild:camaleon z:2];
 	}
 	return self;
 }
@@ -93,5 +111,80 @@
 
 }
 
+-(void)registerWithTouchDispatcher
+{
+    [[[CCDirector sharedDirector] touchDispatcher] addTargetedDelegate:self
+                                                              priority:0
+                                                       swallowsTouches:YES];
+}
+
+-(BOOL) ccTouchBegan:(UITouch *)touch withEvent:(UIEvent *)event
+{
+	return YES;
+}
+
+-(void)setPlayerPosition:(CGPoint)position {
+	camaleon.position = position;
+}
+
+-(void)ccTouchEnded:(UITouch *)touch withEvent:(UIEvent *)event
+{
+    CGPoint touchLocation = [touch locationInView:touch.view];
+    touchLocation = [[CCDirector sharedDirector] convertToGL:touchLocation];
+    touchLocation = [self convertToNodeSpace:touchLocation];
+    
+    CGPoint playerPos = camaleon.position;
+    CGPoint diff = ccpSub(touchLocation, playerPos);
+    int cambioX = 0, cambioY = 0;
+    
+    if ( abs(diff.x) > abs(diff.y) ) {
+        if (diff.x > 0) {
+            cambioX = 1;
+            /*playerPos.x += camaleon.contentSize.width;
+            xCam++;*/
+        } else if (diff.x < 0){
+            cambioX = -1;
+            /*playerPos.x -= camaleon.contentSize.width;
+            xCam--;*/
+        }
+    } else {
+        if (diff.y > 0) {
+            cambioY = 1;
+            /*playerPos.y += camaleon.contentSize.height;
+            yCam++;*/
+        } else if (diff.y < 0){
+            cambioY = -1;
+            /*playerPos.y -= camaleon.contentSize.height;
+            yCam--;*/
+        }
+    }
+    //Cambia las posiciones
+    if (!((xCam == 0 && cambioX < 0) || (yCam == 0 && cambioY < 0)))
+        if (mat[xCam+cambioX][yCam+cambioY] == 0 || mat[xCam+cambioX][yCam+cambioY] == 8 || mat[xCam+cambioX][yCam+cambioY] == 7) {
+            mat[xCam][yCam] = 0;
+            playerPos.x += camaleon.contentSize.width*cambioX;
+            xCam += cambioX;
+            playerPos.y += camaleon.contentSize.height*cambioY;
+            yCam += cambioY;
+            [self setPlayerPosition:playerPos];
+            
+            switch (mat[xCam][yCam]) {
+                case 8:
+                    [self removeChild:llave cleanup:YES];
+                    break;
+                    
+                case 7:
+                    [self removeChild:estrella cleanup:YES];
+                    break;
+                    
+                default:
+                    break;
+            }
+            mat[xCam][yCam] = 9;
+        }
+    
+    
+    
+}
 
 @end
