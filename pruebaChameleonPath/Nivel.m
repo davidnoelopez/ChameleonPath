@@ -51,7 +51,7 @@
         
         //crea paredes que se van a usar en el nivel
         Pared *p1 = [[Pared alloc] init];
-        [p1 setParedSprite:[[NSString alloc] initWithString:@"tile.jpg"]];
+        [p1 setParedSprite:[[NSString alloc] initWithString:@"tile.png"]];
         
         [p1 setTipo:1];
         [_tiles addObject:p1];
