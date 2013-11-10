@@ -43,7 +43,7 @@
         
         CGSize winSize = [CCDirector sharedDirector].winSize;
         
-        CCSprite *background = [CCSprite spriteWithFile:@"BlurryBackground.png"];
+        CCSprite *background = [CCSprite spriteWithFile:@"arena.png"];
         background.position = ccp(winSize.width/2, winSize.height/2);
         [self addChild:background z:-2];
         
