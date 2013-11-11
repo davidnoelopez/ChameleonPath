@@ -45,6 +45,8 @@
         direccion2 = 1;
         direccion3 = 1;
         direccion4 = 1;
+        
+        tengoLlave = FALSE;
 
         
         CGSize winSize = [CCDirector sharedDirector].winSize;
@@ -126,6 +128,12 @@
                     [self moveEnemyArribaAbajo:mosca4 x:xMos4 y:yMos4 tipo: 6 direccion:direccion4];
                     
                 }
+                else if (matrix[x][y] == 11){
+                    puerta = [CCSprite spriteWithFile:@"door.png"];
+                    puerta.position = ccp(x*20+puerta.contentSize.width/2,y*20+puerta.contentSize.height/2);
+                    [self addChild:puerta z:1];
+                    
+                }
             }
         }
         camaleon = [CCSprite spriteWithFile:@"camaleon.png"];
@@ -182,17 +190,24 @@
         if (mat[xMos + d][yMos] == 0) {
             mat[xMos][yMos] = 0;
             moscaPos.x+= enemigo.contentSize.width*d;
-            CCLOG(@"Mosca %d: [%.0f][%.0f]", t, moscaPos.x, moscaPos.y);
+            //CCLOG(@"Mosca %d: [%.0f][%.0f]", t, moscaPos.x, moscaPos.y);
             xMos += d;
             enemigo.position = moscaPos;
             
             mat[xMos][yMos] = t;
         }else if (mat[xMos+d][yMos] == 1){
             d = d * -1;
+        }else if (mat[xMos+d][yMos] == 9){
+            CCLabelTTF *atras = [CCLabelTTF labelWithString:@"Perdiste" fontName:@"verdana" fontSize:25];
+            CCMenuItemLabel *atras1 = [CCMenuItemLabel itemWithLabel:atras target:self selector:@selector(back)];
+            
+            CCMenu *menu2 = [CCMenu menuWithItems:atras1, nil];
+            menu2.position = ccp(240,160);
+            [self addChild:menu2];
         }
     
 
-    [enemigo runAction:[CCSequence actions:[CCMoveTo actionWithDuration:.3 position:ccp(moscaPos.x, moscaPos.y)],[CCCallBlock actionWithBlock:^{
+    [enemigo runAction:[CCSequence actions:[CCMoveTo actionWithDuration:.2 position:ccp(moscaPos.x, moscaPos.y)],[CCCallBlock actionWithBlock:^{
         [self moveEnemyLados:enemigo x:xMos y:yMos tipo:t direccion:d];
     }], nil]];
 
@@ -206,17 +221,24 @@
     if (mat[xMos][yMos + d] == 0) {
         mat[xMos][yMos] = 0;
         moscaPos.y+= enemigo.contentSize.width*d;
-        CCLOG(@"Entro aqui: %.0f, %.0f", moscaPos.x, moscaPos.y);
+        //CCLOG(@"Entro aqui: %.0f, %.0f", moscaPos.x, moscaPos.y);
         yMos += d;
         enemigo.position = moscaPos;
         
         mat[xMos][yMos] = t;
     }else if (mat[xMos][yMos+d] == 1){
         d = d * -1;
+    }else if (mat[xMos][yMos+d] == 9){
+        CCLabelTTF *atras = [CCLabelTTF labelWithString:@"Perdiste" fontName:@"verdana" fontSize:25];
+        CCMenuItemLabel *atras1 = [CCMenuItemLabel itemWithLabel:atras target:self selector:@selector(back)];
+        
+        CCMenu *menu2 = [CCMenu menuWithItems:atras1, nil];
+        menu2.position = ccp(240,160);
+        [self addChild:menu2];
     }
     
     
-    [enemigo runAction:[CCSequence actions:[CCMoveTo actionWithDuration:.3 position:ccp(moscaPos.x, moscaPos.y)],[CCCallBlock actionWithBlock:^{
+    [enemigo runAction:[CCSequence actions:[CCMoveTo actionWithDuration:.2 position:ccp(moscaPos.x, moscaPos.y)],[CCCallBlock actionWithBlock:^{
         [self moveEnemyArribaAbajo:enemigo x:xMos y:yMos tipo:t direccion:d];
     }], nil]];
     
@@ -274,7 +296,7 @@
     
     //Cambia las posiciones
     if (!((xCam == 0 && cambioX < 0) || (yCam == 0 && cambioY < 0)))
-        if (mat[xCam+cambioX][yCam+cambioY] == 0 || mat[xCam+cambioX][yCam+cambioY] == 8 || mat[xCam+cambioX][yCam+cambioY] == 7) {
+        if (mat[xCam+cambioX][yCam+cambioY] == 0 || mat[xCam+cambioX][yCam+cambioY] == 8 || mat[xCam+cambioX][yCam+cambioY] == 7 || mat[xCam+cambioX][yCam+cambioY] == 11 || mat[xCam+cambioX][yCam+cambioY] == 12) {
             mat[xCam][yCam] = 0;
             playerPos.x += camaleon.contentSize.width*cambioX;
             xCam += cambioX;
@@ -284,13 +306,36 @@
             
             switch (mat[xCam][yCam]) {
                 case 8:
+                    tengoLlave = TRUE;
                     [self removeChild:llave cleanup:YES];
                     break;
                     
                 case 7:
                     [self removeChild:estrella cleanup:YES];
                     break;
-                    
+                case 11:
+                    if (tengoLlave) {
+                        CCLabelTTF *atras = [CCLabelTTF labelWithString:@"Ganaste" fontName:@"verdana" fontSize:25];
+                        CCMenuItemLabel *atras1 = [CCMenuItemLabel itemWithLabel:atras target:self selector:@selector(back)];
+                        
+                        CCMenu *menu2 = [CCMenu menuWithItems:atras1, nil];
+                        menu2.position = ccp(240,160);
+
+                        [self addChild:menu2];
+
+                    }
+                    break;
+                case 12:
+                    if (tengoLlave) {
+                        CCLabelTTF *atras = [CCLabelTTF labelWithString:@"Ganaste" fontName:@"verdana" fontSize:25];
+                        CCMenuItemLabel *atras1 = [CCMenuItemLabel itemWithLabel:atras target:self selector:@selector(back)];
+                        
+                        CCMenu *menu2 = [CCMenu menuWithItems:atras1, nil];
+                        menu2.position = ccp(240,160);
+                        [self addChild:menu2];
+                        
+                    }
+                    break;
                 default:
                     break;
             }
