@@ -21,12 +21,13 @@
     int mat[24][16];
     int direccion1, direccion2, direccion3, direccion4;
     BOOL tengoLlave;
+    int offset;
 }
 
 +(CCScene *) scene;
 +(CCScene *) sceneWithMatrix: (int [][16]) matrix;
--(void)moveEnemyLados:(CCSprite *) sprite x: (int)xMos y:(int)yMos tipo:(int) t;
 -(void)moveEnemyArribaAbajo:(CCSprite *) sprite x: (int)xMos y:(int)yMos tipo:(int) t direccion: (int) d;
+-(void)moveEnemyLados:(CCSprite *) enemigo x: (int)xMos y:(int)yMos tipo:(int) t direccion:(int) d;
 
 
 

@@ -10,6 +10,7 @@
 #import "Nivel.h"
 #import "HelloWorldLayer.h"
 #import "Pared.h"
+#import "FinJuego.h"
 
 @implementation Nivel
 
@@ -64,6 +65,13 @@
         [p1 setTipo:1];
         [_tiles addObject:p1];
         
+        //Revisa el tamaño de la pantalla
+        if (winSize.width > 480) {
+            offset = 40;
+        }
+        else {
+            offset = 0;
+        }
         
         for (int x = 0; x < 24; x++) {
             for (int y = 0; y < 16; y++) {
@@ -72,9 +80,8 @@
                 Pared *auxPared = [_tiles objectAtIndex:selectedTile];
                 
                 CCSprite *tile = [[CCSprite alloc] initWithFile:[auxPared paredSprite]];
-                //tile.tag = [auxPared tag];
                 if (matrix[x][y] == 1) {
-                    tile.position = ccp(x*20+tile.contentSize.width/2,y*20+tile.contentSize.height/2);
+                    tile.position = ccp((x*20+tile.contentSize.width/2) + offset,y*20+tile.contentSize.height/2);
                     //tile.position = ccp(0,0);
                     [self addChild:tile z:0];
                 }
@@ -84,19 +91,19 @@
                 }
                 else if (matrix[x][y] == 8){
                     llave = [CCSprite spriteWithFile:@"Key.png"];
-                    llave.position = ccp(x*20+llave.contentSize.width/2,y*20+llave.contentSize.height/2);
+                    llave.position = ccp(x*20+llave.contentSize.width/2 + offset,y*20+llave.contentSize.height/2);
                     [self addChild:llave z:1];
                 }
                 else if (matrix[x][y] == 7){
                     estrella = [CCSprite spriteWithFile:@"star.png"];
-                    estrella.position = ccp(x*20+estrella.contentSize.width/2,y*20+estrella.contentSize.height/2);
+                    estrella.position = ccp(x*20+estrella.contentSize.width/2 + offset,y*20+estrella.contentSize.height/2);
                     [self addChild:estrella z:1];
                 }
                 else if (matrix[x][y] == 3){
                     xMos1 = x;
                     yMos1 = y;
                     mosca1 = [CCSprite spriteWithFile:@"fly.png"];
-                    mosca1.position = ccp(x*20+mosca1.contentSize.width/2,y*20+mosca1.contentSize.height/2);
+                    mosca1.position = ccp(x*20+mosca1.contentSize.width/2 + offset,y*20+mosca1.contentSize.height/2);
                     [self addChild:mosca1 z:1];
                     [self moveEnemyLados:mosca1 x:xMos1 y:yMos1 tipo:3 direccion:direccion1];
 
@@ -105,7 +112,7 @@
                     xMos2 = x;
                     yMos2 = y;
                     mosca2 = [CCSprite spriteWithFile:@"fly.png"];
-                    mosca2.position = ccp(x*20+mosca2.contentSize.width/2,y*20+mosca2.contentSize.height/2);
+                    mosca2.position = ccp(x*20+mosca2.contentSize.width/2 + offset,y*20+mosca2.contentSize.height/2);
                     [self addChild:mosca2 z:1];
                     [self moveEnemyLados:mosca2 x:xMos2 y:yMos2 tipo: 4 direccion:direccion2];
                     
@@ -114,7 +121,7 @@
                     xMos3 = x;
                     yMos3 = y;
                     mosca3 = [CCSprite spriteWithFile:@"fly.png"];
-                    mosca3.position = ccp(x*20+mosca3.contentSize.width/2,y*20+mosca3.contentSize.height/2);
+                    mosca3.position = ccp(x*20+mosca3.contentSize.width/2 + offset,y*20+mosca3.contentSize.height/2);
                     [self addChild:mosca3 z:1];
                     [self moveEnemyArribaAbajo:mosca3 x:xMos3 y:yMos3 tipo: 5 direccion:direccion3];
                     
@@ -123,26 +130,49 @@
                     xMos4 = x;
                     yMos4 = y;
                     mosca4 = [CCSprite spriteWithFile:@"fly.png"];
-                    mosca4.position = ccp(x*20+mosca4.contentSize.width/2,y*20+mosca4.contentSize.height/2);
+                    mosca4.position = ccp(x*20+mosca4.contentSize.width/2 + offset,y*20+mosca4.contentSize.height/2);
                     [self addChild:mosca4 z:1];
                     [self moveEnemyArribaAbajo:mosca4 x:xMos4 y:yMos4 tipo: 6 direccion:direccion4];
                     
                 }
                 else if (matrix[x][y] == 11){
                     puerta = [CCSprite spriteWithFile:@"door.png"];
-                    puerta.position = ccp(x*20+puerta.contentSize.width/2,y*20+puerta.contentSize.height/2);
+                    puerta.position = ccp(x*20+puerta.contentSize.width/2 + offset,y*20+puerta.contentSize.height/2);
                     [self addChild:puerta z:1];
                     
                 }
             }
         }
         camaleon = [CCSprite spriteWithFile:@"camaleon.png"];
-        camaleon.position =  ccp(xCam*20+camaleon.contentSize.width/2,yCam*20+camaleon.contentSize.height/2);
+        camaleon.position =  ccp(xCam*20+camaleon.contentSize.width/2 + offset,yCam*20+camaleon.contentSize.height/2);
         
-        // add the label as a child to this Layer
+        // agrega camaleon como child al layer
         [self addChild:camaleon z:2];
         
-
+        CCSprite *flecha = [CCSprite spriteWithFile:@"flecha_der.png"];
+        flecha.position =  ccp((winSize.width/3)*2 + flecha.contentSize.width/2,(winSize.height/3) + flecha.contentSize.height/2);
+        flecha.opacity = 180;
+        // agrega flecha derecha al layer
+        [self addChild:flecha z:3];
+        
+        flecha = [CCSprite spriteWithFile:@"flecha_izq.png"];
+        flecha.position =  ccp(0 + flecha.contentSize.width/2,(winSize.height/3) + flecha.contentSize.height/2);
+        flecha.opacity = 180;
+        // agrega flecha izquierda al layer
+        [self addChild:flecha z:3];
+        
+        flecha = [CCSprite spriteWithFile:@"flecha_arr.png"];
+        flecha.position =  ccp((winSize.width/3) + flecha.contentSize.width/2,(winSize.height/3)*2 + flecha.contentSize.height/2);
+        flecha.opacity = 180;
+        // agrega flecha arriba al layer
+        [self addChild:flecha z:3];
+        
+        flecha = [CCSprite spriteWithFile:@"flecha_aba.png"];
+        flecha.position =  ccp((winSize.width/3) + flecha.contentSize.width/2,flecha.contentSize.height/2);
+        flecha.opacity = 180;
+        // agrega flecha abajo al layer
+        [self addChild:flecha z:3];
+        
 	}
 	return self;
 }
@@ -198,12 +228,7 @@
         }else if (mat[xMos+d][yMos] == 1){
             d = d * -1;
         }else if (mat[xMos+d][yMos] == 9){
-            CCLabelTTF *atras = [CCLabelTTF labelWithString:@"Perdiste" fontName:@"verdana" fontSize:25];
-            CCMenuItemLabel *atras1 = [CCMenuItemLabel itemWithLabel:atras target:self selector:@selector(back)];
-            
-            CCMenu *menu2 = [CCMenu menuWithItems:atras1, nil];
-            menu2.position = ccp(240,160);
-            [self addChild:menu2];
+            [self perdiste];
         }
     
 
@@ -229,12 +254,7 @@
     }else if (mat[xMos][yMos+d] == 1){
         d = d * -1;
     }else if (mat[xMos][yMos+d] == 9){
-        CCLabelTTF *atras = [CCLabelTTF labelWithString:@"Perdiste" fontName:@"verdana" fontSize:25];
-        CCMenuItemLabel *atras1 = [CCMenuItemLabel itemWithLabel:atras target:self selector:@selector(back)];
-        
-        CCMenu *menu2 = [CCMenu menuWithItems:atras1, nil];
-        menu2.position = ccp(240,160);
-        [self addChild:menu2];
+        [self perdiste];
     }
     
     
@@ -246,6 +266,8 @@
 
 -(void)ccTouchEnded:(UITouch *)touch withEvent:(UIEvent *)event
 {
+    CGSize winSize = [CCDirector sharedDirector].winSize;
+    
     CGPoint touchLocation = [touch locationInView:touch.view];
     touchLocation = [[CCDirector sharedDirector] convertToGL:touchLocation];
     touchLocation = [self convertToNodeSpace:touchLocation];
@@ -253,47 +275,19 @@
     CGPoint playerPos = camaleon.position;
     //CGPoint diff = ccpSub(touchLocation, playerPos);
     int cambioX = 0, cambioY = 0;
-
-    if( (touchLocation.x > 0 && touchLocation.x < 160 ) && (touchLocation.y > 107 && touchLocation.y < 213 ))
+    
+    if( (touchLocation.x > 0 && touchLocation.x < winSize.width/3 ) && (touchLocation.y > winSize.height/3 && touchLocation.y < (winSize.height/3)*2 ))
         cambioX = -1;
     
-    if( (touchLocation.x > 320 && touchLocation.x < 480 ) && (touchLocation.y > 107 && touchLocation.y < 213 ))
+    else if( (touchLocation.x > (winSize.width/3)*2 && touchLocation.x < winSize.width ) && (touchLocation.y > winSize.height/3 && touchLocation.y < (winSize.height/3)*2 ))
         cambioX = +1;
     
-    if( (touchLocation.x > 160 && touchLocation.x < 320 ) && (touchLocation.y > 213 && touchLocation.y < 320 ))
+    else if( (touchLocation.x > winSize.width/3 && touchLocation.x < (winSize.width/3)*2 ) && (touchLocation.y > (winSize.height/3)*2 && touchLocation.y < winSize.height ))
         cambioY = +1;
     
-    if( (touchLocation.x > 160 && touchLocation.x < 320 ) && (touchLocation.y > 0 && touchLocation.y < 107 ))
+    else if( (touchLocation.x > winSize.width/3 && touchLocation.x < (winSize.width/3)*2 ) && (touchLocation.y > 0 && touchLocation.y < winSize.height/3 ))
         cambioY = -1;
 
-    
-   /* Movimiento viejo
-    
-    if ( abs(diff.x) > abs(diff.y) ) {
-        if (diff.x > 0) {
-            cambioX = 1;
-            //playerPos.x += camaleon.contentSize.width;
-            //xCam++;
-        } else if (diff.x < 0){
-            cambioX = -1;
-            //playerPos.x -= camaleon.contentSize.width;
-            //xCam--;
-        }
-    } else {
-        if (diff.y > 0) {
-            cambioY = 1;
-            //playerPos.y += camaleon.contentSize.height;
-            //yCam++;
-        } else if (diff.y < 0){
-            cambioY = -1;
-            //playerPos.y -= camaleon.contentSize.height;
-            //yCam--;
-        }
-    }
-
-    */
-    
-    
     //Cambia las posiciones
     if (!((xCam == 0 && cambioX < 0) || (yCam == 0 && cambioY < 0)))
         if (mat[xCam+cambioX][yCam+cambioY] == 0 || mat[xCam+cambioX][yCam+cambioY] == 8 || mat[xCam+cambioX][yCam+cambioY] == 7 || mat[xCam+cambioX][yCam+cambioY] == 11 || mat[xCam+cambioX][yCam+cambioY] == 12) {
@@ -314,26 +308,9 @@
                     [self removeChild:estrella cleanup:YES];
                     break;
                 case 11:
-                    if (tengoLlave) {
-                        CCLabelTTF *atras = [CCLabelTTF labelWithString:@"Ganaste" fontName:@"verdana" fontSize:25];
-                        CCMenuItemLabel *atras1 = [CCMenuItemLabel itemWithLabel:atras target:self selector:@selector(back)];
-                        
-                        CCMenu *menu2 = [CCMenu menuWithItems:atras1, nil];
-                        menu2.position = ccp(240,160);
-
-                        [self addChild:menu2];
-
-                    }
-                    break;
                 case 12:
                     if (tengoLlave) {
-                        CCLabelTTF *atras = [CCLabelTTF labelWithString:@"Ganaste" fontName:@"verdana" fontSize:25];
-                        CCMenuItemLabel *atras1 = [CCMenuItemLabel itemWithLabel:atras target:self selector:@selector(back)];
-                        
-                        CCMenu *menu2 = [CCMenu menuWithItems:atras1, nil];
-                        menu2.position = ccp(240,160);
-                        [self addChild:menu2];
-                        
+                        [self ganaste];
                     }
                     break;
                 default:
@@ -341,9 +318,20 @@
             }
             mat[xCam][yCam] = 9;
         }
+}
+
+- (void) perdiste
+{
+    CCScene *EndScene = [FinJuego sceneWithEnd:1];
     
+	[[CCDirector sharedDirector] replaceScene:[CCTransitionFade transitionWithDuration:0.5f scene:EndScene]];
+}
+
+- (void) ganaste
+{
+    CCScene *EndScene = [FinJuego sceneWithEnd:0];
     
-    
+	[[CCDirector sharedDirector] replaceScene:[CCTransitionFade transitionWithDuration:0.5f scene:EndScene]];
 }
 
 @end
