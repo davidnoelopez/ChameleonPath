@@ -42,6 +42,7 @@
 	if((self=[super init])) {
         self.isTouchEnabled = YES;
         
+        //Dirección actual de los enemigos
         direccion1 = 1;
         direccion2 = 1;
         direccion3 = 1;
@@ -51,6 +52,19 @@
 
         
         CGSize winSize = [CCDirector sharedDirector].winSize;
+        
+        //Empieza el timer
+        timer = 0;
+        
+        timerLabel = [CCLabelTTF labelWithString:@"0" fontName:@"Arial" fontSize:24];
+        timerLabel.position = CGPointMake(15, winSize.height-12);
+        [self addChild:timerLabel z:2];
+        
+        //Actualiza el timer, sumandole uno
+        [self schedule:@selector(update:)];
+
+        
+        //Crea el fondo, y lo agrega
         
         CCSprite *background = [CCSprite spriteWithFile:@"arena.png"];
         background.position = ccp(winSize.width/2, winSize.height/2);
@@ -73,6 +87,16 @@
             offset = 0;
         }
         
+        /*
+         Este ciclo, en base a la matriz, dibuja los objetos.
+         1 - Paredes
+         9 - Camaleon
+         8 - Llave
+         7 - Estrella
+         3,4 - Mosca de Izquierda a Derecha
+         5,6 - Mosca de Arriba a abajo
+         11 - Puerta
+         */
         for (int x = 0; x < 24; x++) {
             for (int y = 0; y < 16; y++) {
                 mat[x][y] = matrix[x][y];
@@ -213,25 +237,33 @@
 	//mosca.position = position;
 }
 
+/*
+ Éste es el metodo para que los enemigos de tipo 3 o 4 se muevan hacia los lados.
+ Recibe:
+ xMos - posición en x de la Mosca que lo llama
+ yMos - posición en y de la Mosca que lo llama
+ tipo - tipo de la mosca que lo llama (3 o 4)
+ direccion - hacia que dirección se mueve actualmente
+
+ */
 -(void)moveEnemyLados:(CCSprite *) enemigo x: (int)xMos y:(int)yMos tipo:(int) t direccion:(int) d{
     CGPoint moscaPos = enemigo.position;
     
-    
+        //Si se puede mover, actualiza la matriz
         if (mat[xMos + d][yMos] == 0) {
             mat[xMos][yMos] = 0;
             moscaPos.x+= enemigo.contentSize.width*d;
-            //CCLOG(@"Mosca %d: [%.0f][%.0f]", t, moscaPos.x, moscaPos.y);
             xMos += d;
             enemigo.position = moscaPos;
             
             mat[xMos][yMos] = t;
-        }else if (mat[xMos+d][yMos] == 1){
+        }else if (mat[xMos+d][yMos] == 1){ // Si hay pared, se mueve en dirección contraria
             d = d * -1;
-        }else if (mat[xMos+d][yMos] == 9){
+        }else if (mat[xMos+d][yMos] == 9){ // Si choca con el camaleón, se llama al método "perdiste"
             [self perdiste];
         }
     
-
+    //Ejecuta la acción del movimiento con cierta velocidad, y los nuevos valores
     [enemigo runAction:[CCSequence actions:[CCMoveTo actionWithDuration:.2 position:ccp(moscaPos.x, moscaPos.y)],[CCCallBlock actionWithBlock:^{
         [self moveEnemyLados:enemigo x:xMos y:yMos tipo:t direccion:d];
     }], nil]];
@@ -239,6 +271,15 @@
 }
 
 
+/*
+ Éste es el metodo para que los enemigos de tipo 5 o 6 se muevan hacia los lados.
+ Recibe:
+ xMos - posición en x de la Mosca que lo llama
+ yMos - posición en y de la Mosca que lo llama
+ tipo - tipo de la mosca que lo llama (5 o 6)
+ direccion - hacia que dirección se mueve actualmente
+ 
+ */
 -(void)moveEnemyArribaAbajo:(CCSprite *) enemigo x: (int)xMos y:(int)yMos tipo:(int) t direccion:(int)d{
     CGPoint moscaPos = enemigo.position;
     
@@ -246,18 +287,17 @@
     if (mat[xMos][yMos + d] == 0) {
         mat[xMos][yMos] = 0;
         moscaPos.y+= enemigo.contentSize.width*d;
-        //CCLOG(@"Entro aqui: %.0f, %.0f", moscaPos.x, moscaPos.y);
         yMos += d;
         enemigo.position = moscaPos;
         
         mat[xMos][yMos] = t;
-    }else if (mat[xMos][yMos+d] == 1){
+    }else if (mat[xMos][yMos+d] == 1){ // Si hay pared, se mueve en dirección contraria
         d = d * -1;
-    }else if (mat[xMos][yMos+d] == 9){
+    }else if (mat[xMos][yMos+d] == 9){// Si choca con el camaleón, se llama al método "perdiste"
         [self perdiste];
     }
     
-    
+     //Ejecuta la acción del movimiento con cierta velocidad, y los nuevos valores
     [enemigo runAction:[CCSequence actions:[CCMoveTo actionWithDuration:.2 position:ccp(moscaPos.x, moscaPos.y)],[CCCallBlock actionWithBlock:^{
         [self moveEnemyArribaAbajo:enemigo x:xMos y:yMos tipo:t direccion:d];
     }], nil]];
@@ -275,6 +315,8 @@
     CGPoint playerPos = camaleon.position;
     //CGPoint diff = ccpSub(touchLocation, playerPos);
     int cambioX = 0, cambioY = 0;
+    
+    //Lógica de las Flechas para moverse
     
     if( (touchLocation.x > 0 && touchLocation.x < winSize.width/3 ) && (touchLocation.y > winSize.height/3 && touchLocation.y < (winSize.height/3)*2 ))
         cambioX = -1;
@@ -305,6 +347,7 @@
                     break;
                     
                 case 7:
+                    tengoEstrella =TRUE;
                     [self removeChild:estrella cleanup:YES];
                     break;
                 case 11:
@@ -320,18 +363,41 @@
         }
 }
 
+/*
+ Los siguientes métodos llaman a la escena post-nivel llamada "FinJuego", con un parámetro 1 si se perdió,
+ y un parámetro 2 si se ganó.
+ */
 - (void) perdiste
 {
-    CCScene *EndScene = [FinJuego sceneWithEnd:1];
+    CCScene *EndScene = [FinJuego sceneWithEnd:1 t:timer e:tengoEstrella];
     
 	[[CCDirector sharedDirector] replaceScene:[CCTransitionFade transitionWithDuration:0.5f scene:EndScene]];
 }
 
 - (void) ganaste
 {
-    CCScene *EndScene = [FinJuego sceneWithEnd:0];
+    CCScene *EndScene = [FinJuego sceneWithEnd:0 t:timer e:tengoEstrella];
     
 	[[CCDirector sharedDirector] replaceScene:[CCTransitionFade transitionWithDuration:0.5f scene:EndScene]];
 }
+
+
+/*
+ Parte del timer, simplemente actualiza cada segundo el valor del timer
+ y lo dibuja en pantalla.
+ */
+
+-(void)update:(ccTime)dt{
+    
+    tiempoTotal += dt;
+    tiempoActual = (int)tiempoTotal;
+    if (timer < tiempoActual)
+    {
+        timer = tiempoActual;
+        [timerLabel setString:[NSString stringWithFormat:@"%i", timer]];
+    }
+    
+}
+
 
 @end
