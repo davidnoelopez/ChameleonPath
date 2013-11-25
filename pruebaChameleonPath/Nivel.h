@@ -22,13 +22,14 @@
     int direccion1, direccion2, direccion3, direccion4;
     BOOL tengoLlave;
     BOOL tengoEstrella;
+    BOOL colision;
     int offset;
     
     CCLabelTTF *timerLabel;
     ccTime tiempoTotal;
     int timer;
     int tiempoActual;
-
+    
 }
 
 +(CCScene *) scene;

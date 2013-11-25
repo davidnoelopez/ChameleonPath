@@ -86,8 +86,6 @@ CCMenuItem *_soundOn;
         
         //Add the menu as a child to this layer
         [self addChild:menu2];
-
-        
 	}
 	return self;
 }

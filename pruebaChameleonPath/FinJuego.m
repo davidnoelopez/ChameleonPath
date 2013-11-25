@@ -35,6 +35,7 @@
     return scene;
 }
 
+
 /*
  Crea la escena.
  Elementos:
@@ -69,6 +70,7 @@
         else if (end == 1) {
             textEnd = [CCSprite spriteWithFile:@"GameOver.png"];
             punt= [CCLabelTTF labelWithString:@"" fontName:@"verdana" fontSize:15];
+            puntos = 0;
         }
         
         textEnd.position =  ccp(winSize.width/2, winSize.height/2);
@@ -84,6 +86,51 @@
         menu2.position = ccp((winSize.width/2),(winSize.height/6));
         
         [self addChild:menu2];
+        
+        /* Highscores */
+        NSString *pathPlist;
+        NSMutableArray *puntuaciones;
+        NSMutableArray *temp;
+        
+        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+        NSString *documentsDirectory = [paths objectAtIndex:0];
+        NSString *filePath = [documentsDirectory stringByAppendingPathComponent: @"highscores.plist"];
+        
+        if([[NSFileManager defaultManager] fileExistsAtPath:filePath]){
+            NSMutableArray *arreglo = [[NSMutableArray alloc] initWithContentsOfFile: filePath];
+            [arreglo addObject:@(puntos)];
+            
+            NSSortDescriptor *highestToLowest = [NSSortDescriptor sortDescriptorWithKey:@"self" ascending:NO];
+            [arreglo sortUsingDescriptors:[NSArray arrayWithObject:highestToLowest]];
+
+            for (int i = 0; i<10; i++) {
+                NSLog(@"%@ %d", arreglo[i], i);
+            }
+            NSLog(@"ENTRO AL IF");
+
+            [arreglo writeToFile: filePath atomically:YES];
+        }else{
+            pathPlist = [[NSBundle mainBundle] pathForResource:@"highscores base" ofType:@"plist"];
+            puntuaciones = [[NSMutableArray alloc] initWithContentsOfFile:pathPlist];
+            temp = [[NSMutableArray alloc] initWithArray:puntuaciones];
+            
+            [puntuaciones addObject:@(puntos)];
+            
+            NSLog(@"ENTRO AL ELSE");
+
+            NSSortDescriptor *highestToLowest = [NSSortDescriptor sortDescriptorWithKey:@"self" ascending:NO];
+            [puntuaciones sortUsingDescriptors:[NSArray arrayWithObject:highestToLowest]];
+
+            for (int i = 0; i<temp.count; i++) {
+                [temp replaceObjectAtIndex:i withObject:puntuaciones[i]];
+                NSLog(@"%@ %d", temp[i], i);
+            }
+
+            [temp writeToFile: filePath atomically:YES];
+
+        }
+
+
     }
     return self;
 }
@@ -116,5 +163,7 @@ El selector 'back' para regresar al menu principal
     
 	[[CCDirector sharedDirector] replaceScene:[CCTransitionFade transitionWithDuration:0.5f scene:MainMenuScene]];
 }
+
+
 
 @end

@@ -49,6 +49,7 @@
         direccion4 = 1;
         
         tengoLlave = FALSE;
+        colision = FALSE;
 
         
         CGSize winSize = [CCDirector sharedDirector].winSize;
@@ -260,7 +261,10 @@
         }else if (mat[xMos+d][yMos] == 1){ // Si hay pared, se mueve en dirección contraria
             d = d * -1;
         }else if (mat[xMos+d][yMos] == 9){ // Si choca con el camaleón, se llama al método "perdiste"
-            [self perdiste];
+            if(!colision){
+                colision =TRUE;
+                [self perdiste];
+            }
         }
     
     //Ejecuta la acción del movimiento con cierta velocidad, y los nuevos valores
@@ -294,7 +298,11 @@
     }else if (mat[xMos][yMos+d] == 1){ // Si hay pared, se mueve en dirección contraria
         d = d * -1;
     }else if (mat[xMos][yMos+d] == 9){// Si choca con el camaleón, se llama al método "perdiste"
-        [self perdiste];
+        if(!colision){
+            colision =TRUE;
+            [self perdiste];
+        }
+        
     }
     
      //Ejecuta la acción del movimiento con cierta velocidad, y los nuevos valores
@@ -370,15 +378,15 @@
 - (void) perdiste
 {
     CCScene *EndScene = [FinJuego sceneWithEnd:1 t:timer e:tengoEstrella];
-    
+    NSLog(@"Perdiste");
 	[[CCDirector sharedDirector] replaceScene:[CCTransitionFade transitionWithDuration:0.5f scene:EndScene]];
 }
 
 - (void) ganaste
 {
     CCScene *EndScene = [FinJuego sceneWithEnd:0 t:timer e:tengoEstrella];
-    
-	[[CCDirector sharedDirector] replaceScene:[CCTransitionFade transitionWithDuration:0.5f scene:EndScene]];
+    NSLog(@"Ganaste");
+    [[CCDirector sharedDirector] replaceScene:[CCTransitionFade transitionWithDuration:0.5f scene:EndScene]];
 }
 
 
