@@ -40,6 +40,23 @@
         // add the label as a child to this Layer
         [self addChild: highscores];
         
+        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+        NSString *documentsDirectory = [paths objectAtIndex:0];
+        NSString *filePath = [documentsDirectory stringByAppendingPathComponent: @"highscores.plist"];
+        CCLabelTTF *puntos;
+        if([[NSFileManager defaultManager] fileExistsAtPath:filePath]){
+            NSMutableArray *arreglo = [[NSMutableArray alloc] initWithContentsOfFile: filePath];
+            for(int i = 0; i < 10; i++){
+                NSString *numEnString= [NSString stringWithFormat:@"%i", [arreglo[i] integerValue]];
+                NSLog(@"%@", numEnString);
+                puntos = [CCLabelTTF labelWithString:numEnString fontName:@"verdana" fontSize:18];
+                puntos.position = ccp(winSize.width/2 , 80+(i*15) );
+                [self addChild:puntos];
+            }
+            
+        }
+        
+
         CCLabelTTF *atras = [CCLabelTTF labelWithString:@"Back" fontName:@"verdana" fontSize:25];
         CCMenuItemLabel *atras1 = [CCMenuItemLabel itemWithLabel:atras target:self selector:@selector(back)];
         

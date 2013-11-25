@@ -88,6 +88,7 @@
         [self addChild:menu2];
         
         /* Highscores */
+        
         NSString *pathPlist;
         NSMutableArray *puntuaciones;
         NSMutableArray *temp;
@@ -100,14 +101,18 @@
             NSMutableArray *arreglo = [[NSMutableArray alloc] initWithContentsOfFile: filePath];
             [arreglo addObject:@(puntos)];
             
+            //los ordena de mayor a menor
             NSSortDescriptor *highestToLowest = [NSSortDescriptor sortDescriptorWithKey:@"self" ascending:NO];
             [arreglo sortUsingDescriptors:[NSArray arrayWithObject:highestToLowest]];
-
+            
+            //Para imprimir los High Scores
+            /*
             for (int i = 0; i<10; i++) {
                 NSLog(@"%@ %d", arreglo[i], i);
             }
-            NSLog(@"ENTRO AL IF");
-
+            */
+            
+            //Escribe a plist.
             [arreglo writeToFile: filePath atomically:YES];
         }else{
             pathPlist = [[NSBundle mainBundle] pathForResource:@"highscores base" ofType:@"plist"];
@@ -115,16 +120,17 @@
             temp = [[NSMutableArray alloc] initWithArray:puntuaciones];
             
             [puntuaciones addObject:@(puntos)];
-            
-            NSLog(@"ENTRO AL ELSE");
 
             NSSortDescriptor *highestToLowest = [NSSortDescriptor sortDescriptorWithKey:@"self" ascending:NO];
             [puntuaciones sortUsingDescriptors:[NSArray arrayWithObject:highestToLowest]];
 
+            // Para imprimir los High Scores
+            /*
             for (int i = 0; i<temp.count; i++) {
                 [temp replaceObjectAtIndex:i withObject:puntuaciones[i]];
                 NSLog(@"%@ %d", temp[i], i);
             }
+             */
 
             [temp writeToFile: filePath atomically:YES];
 
