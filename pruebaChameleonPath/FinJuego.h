@@ -13,6 +13,6 @@
     
 }
 
-+(CCScene *) sceneWithEnd: (int) end t: (int)tiempo  e:(BOOL) estrella;
++(CCScene *) sceneWithEnd: (int) end t: (int)tiempo  e:(int) estrella;
 
 @end

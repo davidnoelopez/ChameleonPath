@@ -25,7 +25,7 @@
  Crea la capa donde se ejecutará la escena
  */
 
-+(CCScene *) sceneWithEnd: (int) end t: (int)tiempo  e:(BOOL) estrella{
++(CCScene *) sceneWithEnd: (int) end t: (int)tiempo  e:(int) estrella{
     CCScene *scene = [CCScene node];
     
     FinJuego *layer = [[FinJuego alloc] initWithEnd:end t:tiempo e:estrella];
@@ -44,7 +44,7 @@
  -CCMenu menu2: El menu con la opción para regresar al menú principal
  */
 
--(id)initWithEnd:(int)end t: (int)tiempo  e:(BOOL) estrella
+-(id)initWithEnd:(int)end t: (int)tiempo  e:(int) estrella
 {
     if( (self=[super init]) ) {
         self.isTouchEnabled = YES;
@@ -59,9 +59,9 @@
         CCLabelTTF *punt;
         
         int puntos = 0;
-        puntos = 100 - tiempo;
+        puntos = 75000/tiempo;
         if(estrella)
-            puntos +=15;
+            puntos +=200*estrella;
         
         if (end == 0) {
             textEnd = [CCSprite spriteWithFile:@"Win.png"];

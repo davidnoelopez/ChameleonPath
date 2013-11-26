@@ -50,7 +50,7 @@
                 NSString *numEnString= [NSString stringWithFormat:@"%i", [arreglo[i] integerValue]];
                 NSLog(@"%@", numEnString);
                 puntos = [CCLabelTTF labelWithString:numEnString fontName:@"verdana" fontSize:18];
-                puntos.position = ccp(winSize.width/2 , 80+(i*15) );
+                puntos.position = ccp(winSize.width/2 , 230-(i*17) );
                 [self addChild:puntos];
             }
             

@@ -24,12 +24,9 @@
     return scene;
 }
 
-+(CCScene *) sceneWithMatrix:(int [][16])matrix{
++(CCScene *) sceneWithMatrix:(int [][16])matrix nivel: (int) n time:(int)t {
     CCScene *scene = [CCScene node];
-    
-    Nivel *layer = [[Nivel alloc] initWithMatrix:matrix];
-    
-    //[[self alloc] initWithMatrix:matrix];
+    Nivel *layer = [[Nivel alloc] initWithMatrix:matrix nivel:n time: t];
     
     [scene addChild: layer];
     
@@ -37,8 +34,10 @@
     
 }
 
--(id) initWithMatrix:(int [][16])matrix
+-(id) initWithMatrix:(int [][16])matrix nivel:(int) n time:(int) t
 {
+    //marca el nivel actual
+    nivelActual = n;
 	if((self=[super init])) {
         self.isTouchEnabled = YES;
         
@@ -50,14 +49,17 @@
         
         tengoLlave = FALSE;
         colision = FALSE;
+        tengoEstrella = 0;
 
         
         CGSize winSize = [CCDirector sharedDirector].winSize;
         
         //Empieza el timer
-        timer = 0;
+        timer = t;
+        tiempoTotal = (ccTime)t;
+        NSString *tiempo = [NSString stringWithFormat:@"%d", t];
         
-        timerLabel = [CCLabelTTF labelWithString:@"0" fontName:@"Arial" fontSize:24];
+        timerLabel = [CCLabelTTF labelWithString:tiempo fontName:@"Arial" fontSize:24];
         timerLabel.position = CGPointMake(15, winSize.height-12);
         [self addChild:timerLabel z:2];
         
@@ -105,66 +107,75 @@
                 Pared *auxPared = [_tiles objectAtIndex:selectedTile];
                 
                 CCSprite *tile = [[CCSprite alloc] initWithFile:[auxPared paredSprite]];
-                if (matrix[x][y] == 1) {
-                    tile.position = ccp((x*20+tile.contentSize.width/2) + offset,y*20+tile.contentSize.height/2);
-                    //tile.position = ccp(0,0);
-                    [self addChild:tile z:0];
-                }
-                else if (matrix[x][y] == 9){
-                    xCam = x;
-                    yCam = y;
-                }
-                else if (matrix[x][y] == 8){
-                    llave = [CCSprite spriteWithFile:@"Key.png"];
-                    llave.position = ccp(x*20+llave.contentSize.width/2 + offset,y*20+llave.contentSize.height/2);
-                    [self addChild:llave z:1];
-                }
-                else if (matrix[x][y] == 7){
-                    estrella = [CCSprite spriteWithFile:@"star.png"];
-                    estrella.position = ccp(x*20+estrella.contentSize.width/2 + offset,y*20+estrella.contentSize.height/2);
-                    [self addChild:estrella z:1];
-                }
-                else if (matrix[x][y] == 3){
-                    xMos1 = x;
-                    yMos1 = y;
-                    mosca1 = [CCSprite spriteWithFile:@"fly.png"];
-                    mosca1.position = ccp(x*20+mosca1.contentSize.width/2 + offset,y*20+mosca1.contentSize.height/2);
-                    [self addChild:mosca1 z:1];
-                    [self moveEnemyLados:mosca1 x:xMos1 y:yMos1 tipo:3 direccion:direccion1];
-
-                }
-                else if (matrix[x][y] == 4){
-                    xMos2 = x;
-                    yMos2 = y;
-                    mosca2 = [CCSprite spriteWithFile:@"fly.png"];
-                    mosca2.position = ccp(x*20+mosca2.contentSize.width/2 + offset,y*20+mosca2.contentSize.height/2);
-                    [self addChild:mosca2 z:1];
-                    [self moveEnemyLados:mosca2 x:xMos2 y:yMos2 tipo: 4 direccion:direccion2];
-                    
-                }
-                else if (matrix[x][y] == 5){
-                    xMos3 = x;
-                    yMos3 = y;
-                    mosca3 = [CCSprite spriteWithFile:@"fly.png"];
-                    mosca3.position = ccp(x*20+mosca3.contentSize.width/2 + offset,y*20+mosca3.contentSize.height/2);
-                    [self addChild:mosca3 z:1];
-                    [self moveEnemyArribaAbajo:mosca3 x:xMos3 y:yMos3 tipo: 5 direccion:direccion3];
-                    
-                }
-                else if (matrix[x][y] == 6){
-                    xMos4 = x;
-                    yMos4 = y;
-                    mosca4 = [CCSprite spriteWithFile:@"fly.png"];
-                    mosca4.position = ccp(x*20+mosca4.contentSize.width/2 + offset,y*20+mosca4.contentSize.height/2);
-                    [self addChild:mosca4 z:1];
-                    [self moveEnemyArribaAbajo:mosca4 x:xMos4 y:yMos4 tipo: 6 direccion:direccion4];
-                    
-                }
-                else if (matrix[x][y] == 11){
-                    puerta = [CCSprite spriteWithFile:@"door.png"];
-                    puerta.position = ccp(x*20+puerta.contentSize.width/2 + offset,y*20+puerta.contentSize.height/2);
-                    [self addChild:puerta z:1];
-                    
+                switch (matrix[x][y]) {
+                    case 1:
+                        tile.position = ccp((x*20+tile.contentSize.width/2) + offset,y*20+tile.contentSize.height/2);
+                        //tile.position = ccp(0,0);
+                        [self addChild:tile z:0];
+                        break;
+                    case 9:
+                        xCam = x;
+                        yCam = y;
+                        break;
+                    case 8:
+                        llave = [CCSprite spriteWithFile:@"Key.png"];
+                        llave.position = ccp(x*20+llave.contentSize.width/2 + offset,y*20+llave.contentSize.height/2);
+                        [self addChild:llave z:1];
+                        break;
+                    case 7:
+                        estrella3 = [CCSprite spriteWithFile:@"star.png"];
+                        estrella3.position = ccp(x*20+estrella3.contentSize.width/2 + offset,y*20+estrella3.contentSize.height/2);
+                        [self addChild:estrella3 z:1];
+                        break;
+                    case 6:
+                        estrella2 = [CCSprite spriteWithFile:@"star.png"];
+                        estrella2.position = ccp(x*20+estrella2.contentSize.width/2 + offset,y*20+estrella2.contentSize.height/2);
+                        [self addChild:estrella2 z:1];
+                        break;
+                    case 5:
+                        estrella1 = [CCSprite spriteWithFile:@"star.png"];
+                        estrella1.position = ccp(x*20+estrella1.contentSize.width/2 + offset,y*20+estrella1.contentSize.height/2);
+                        [self addChild:estrella1 z:1];
+                        break;
+                    case -1:
+                        xMos1 = x;
+                        yMos1 = y;
+                        mosca1 = [CCSprite spriteWithFile:@"fly.png"];
+                        mosca1.position = ccp(x*20+mosca1.contentSize.width/2 + offset,y*20+mosca1.contentSize.height/2);
+                        [self addChild:mosca1 z:1];
+                        [self moveEnemyLados:mosca1 x:xMos1 y:yMos1 tipo:3 direccion:direccion1];
+                        break;
+                    case -2:
+                        xMos2 = x;
+                        yMos2 = y;
+                        mosca2 = [CCSprite spriteWithFile:@"fly.png"];
+                        mosca2.position = ccp(x*20+mosca2.contentSize.width/2 + offset,y*20+mosca2.contentSize.height/2);
+                        [self addChild:mosca2 z:1];
+                        [self moveEnemyLados:mosca2 x:xMos2 y:yMos2 tipo: 4 direccion:direccion2];
+                        break;
+                    case -3:
+                        xMos3 = x;
+                        yMos3 = y;
+                        mosca3 = [CCSprite spriteWithFile:@"fly.png"];
+                        mosca3.position = ccp(x*20+mosca3.contentSize.width/2 + offset,y*20+mosca3.contentSize.height/2);
+                        [self addChild:mosca3 z:1];
+                        [self moveEnemyArribaAbajo:mosca3 x:xMos3 y:yMos3 tipo: 5 direccion:direccion3];
+                        break;
+                    case -4:
+                        xMos4 = x;
+                        yMos4 = y;
+                        mosca4 = [CCSprite spriteWithFile:@"fly.png"];
+                        mosca4.position = ccp(x*20+mosca4.contentSize.width/2 + offset,y*20+mosca4.contentSize.height/2);
+                        [self addChild:mosca4 z:1];
+                        [self moveEnemyArribaAbajo:mosca4 x:xMos4 y:yMos4 tipo: 6 direccion:direccion4];
+                        break;
+                    case 11:
+                        puerta = [CCSprite spriteWithFile:@"door.png"];
+                        puerta.position = ccp(x*20+puerta.contentSize.width/2 + offset,y*20+puerta.contentSize.height/2);
+                        [self addChild:puerta z:1];
+                        break;
+                    default:
+                        break;
                 }
             }
         }
@@ -175,13 +186,13 @@
         [self addChild:camaleon z:2];
         
         CCSprite *flecha = [CCSprite spriteWithFile:@"flecha_der.png"];
-        flecha.position =  ccp((winSize.width/3)*2 + flecha.contentSize.width/2,(winSize.height/3) + flecha.contentSize.height/2);
+        flecha.position =  ccp(winSize.width - flecha.contentSize.width/2,(winSize.height/3) + flecha.contentSize.height/2);
         flecha.opacity = 180;
         // agrega flecha derecha al layer
         [self addChild:flecha z:3];
         
         flecha = [CCSprite spriteWithFile:@"flecha_izq.png"];
-        flecha.position =  ccp(0 + flecha.contentSize.width/2,(winSize.height/3) + flecha.contentSize.height/2);
+        flecha.position =  ccp(flecha.contentSize.width/2,(winSize.height/3) + flecha.contentSize.height/2);
         flecha.opacity = 180;
         // agrega flecha izquierda al layer
         [self addChild:flecha z:3];
@@ -234,10 +245,6 @@
 	camaleon.position = position;
 }
 
--(void)setMoscaPosition:(CGPoint)position {
-	//mosca.position = position;
-}
-
 /*
  Éste es el metodo para que los enemigos de tipo 3 o 4 se muevan hacia los lados.
  Recibe:
@@ -249,7 +256,13 @@
  */
 -(void)moveEnemyLados:(CCSprite *) enemigo x: (int)xMos y:(int)yMos tipo:(int) t direccion:(int) d{
     CGPoint moscaPos = enemigo.position;
-    
+    //revisa si hay una colicion de antemano con el camaleon
+    if (mat[xMos][yMos] == 9) {
+        if(!colision){
+            colision =TRUE;
+            [self perdiste];
+        }
+    }
         //Si se puede mover, actualiza la matriz
         if (mat[xMos + d][yMos] == 0) {
             mat[xMos][yMos] = 0;
@@ -286,7 +299,13 @@
  */
 -(void)moveEnemyArribaAbajo:(CCSprite *) enemigo x: (int)xMos y:(int)yMos tipo:(int) t direccion:(int)d{
     CGPoint moscaPos = enemigo.position;
-    
+    //revisa si hay una colicion de antemano con el camaleon
+    if (mat[xMos][yMos] == 9) {
+        if(!colision){
+            colision =TRUE;
+            [self perdiste];
+        }
+    }
     
     if (mat[xMos][yMos + d] == 0) {
         mat[xMos][yMos] = 0;
@@ -295,7 +314,7 @@
         enemigo.position = moscaPos;
         
         mat[xMos][yMos] = t;
-    }else if (mat[xMos][yMos+d] == 1){ // Si hay pared, se mueve en dirección contraria
+    }else if (mat[xMos][yMos+d] == 1  || mat[xMos][yMos + d] >= 11){ // Si hay pared, se mueve en dirección contraria
         d = d * -1;
     }else if (mat[xMos][yMos+d] == 9){// Si choca con el camaleón, se llama al método "perdiste"
         if(!colision){
@@ -339,35 +358,57 @@
         cambioY = -1;
 
     //Cambia las posiciones
-    if (!((xCam == 0 && cambioX < 0) || (yCam == 0 && cambioY < 0)))
-        if (mat[xCam+cambioX][yCam+cambioY] == 0 || mat[xCam+cambioX][yCam+cambioY] == 8 || mat[xCam+cambioX][yCam+cambioY] == 7 || mat[xCam+cambioX][yCam+cambioY] == 11 || mat[xCam+cambioX][yCam+cambioY] == 12) {
-            mat[xCam][yCam] = 0;
-            playerPos.x += camaleon.contentSize.width*cambioX;
-            xCam += cambioX;
-            playerPos.y += camaleon.contentSize.height*cambioY;
-            yCam += cambioY;
-            [self setPlayerPosition:playerPos];
-            
-            switch (mat[xCam][yCam]) {
+    if (cambioX != 0 || cambioY != 0)
+        if (mat[xCam+cambioX][yCam+cambioY] != 1) {
+            BOOL move = true;
+            switch (mat[xCam+cambioX][yCam+cambioY]) {
+                case -1:
+                case -2:
+                case -3:
+                case -4:
+                    if(!colision){
+                        colision =TRUE;
+                        [self perdiste];
+                    }
+                    break;
+                case 5:
+                    tengoEstrella++;
+                    [self removeChild:estrella1 cleanup:YES];
+                    break;
+                case 6:
+                    tengoEstrella++;
+                    [self removeChild:estrella2 cleanup:YES];
+                    break;
+                case 7:
+                    tengoEstrella++;
+                    [self removeChild:estrella3 cleanup:YES];
+                    break;
                 case 8:
                     tengoLlave = TRUE;
                     [self removeChild:llave cleanup:YES];
-                    break;
-                    
-                case 7:
-                    tengoEstrella =TRUE;
-                    [self removeChild:estrella cleanup:YES];
                     break;
                 case 11:
                 case 12:
                     if (tengoLlave) {
                         [self ganaste];
                     }
+                    else {
+                        move = false;
+                    }
                     break;
                 default:
                     break;
             }
-            mat[xCam][yCam] = 9;
+            if (move) {
+                mat[xCam][yCam] = 0;
+                playerPos.x += camaleon.contentSize.width*cambioX;
+                xCam += cambioX;
+                playerPos.y += camaleon.contentSize.height*cambioY;
+                yCam += cambioY;
+                [self setPlayerPosition:playerPos];
+                mat[xCam][yCam] = 9;
+
+            }
         }
 }
 
@@ -378,15 +419,50 @@
 - (void) perdiste
 {
     CCScene *EndScene = [FinJuego sceneWithEnd:1 t:timer e:tengoEstrella];
-    NSLog(@"Perdiste");
 	[[CCDirector sharedDirector] replaceScene:[CCTransitionFade transitionWithDuration:0.5f scene:EndScene]];
 }
 
 - (void) ganaste
 {
-    CCScene *EndScene = [FinJuego sceneWithEnd:0 t:timer e:tengoEstrella];
-    NSLog(@"Ganaste");
-    [[CCDirector sharedDirector] replaceScene:[CCTransitionFade transitionWithDuration:0.5f scene:EndScene]];
+    //si el nivel es menor al maximo de niveles continua al siguiente nivel
+    if (nivelActual < 2) {
+        int matrix[24][16] = {
+            
+            1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+            1,0,0,0,5,1,0,0,0,0,0,0,0,0,9,1,
+            1,0,1,1,1,1,0,0,0,0,0,0,0,0,0,1,
+            1,0,1,0,0,0,0,-1,1,1,1,1,1,1,1,1,
+            1,0,1,0,0,1,0,0,1,0,0,0,0,0,0,1,
+            1,0,1,1,0,1,1,1,1,0,0,0,1,0,0,1,
+            1,0,1,0,0,1,6,0,1,0,1,1,1,0,0,1,
+            1,0,1,0,1,1,0,0,1,0,0,0,1,0,0,1,
+            1,0,1,0,0,1,0,0,1,0,0,0,1,0,7,1,
+            1,0,1,0,0,1,0,0,1,1,1,0,1,1,1,1,
+            1,-3,0,1,0,1,0,0,0,0,1,0,0,0,0,1,
+            1,0,0,0,0,1,0,0,-2,0,1,0,0,0,0,1,
+            1,0,0,1,1,1,1,1,0,0,1,0,0,1,1,1,
+            1,0,0,1,0,0,0,0,0,0,1,0,0,0,0,1,
+            1,0,0,0,0,0,1,1,1,1,1,0,0,1,0,1,
+            1,0,0,0,0,0,1,0,0,0,1,1,0,1,0,1,
+            1,1,1,1,0,0,1,0,0,0,0,1,0,1,0,1,
+            1,0,0,1,0,0,1,0,0,0,0,1,0,1,0,1,
+            1,0,0,1,0,0,1,0,0,1,0,0,0,1,8,1,
+            1,0,0,0,0,0,1,0,0,1,0,0,0,1,0,1,
+            1,0,0,0,0,0,1,0,0,1,1,1,1,1,1,1,
+            1,0,0,1,0,0,0,-4,0,0,0,0,0,0,11,12,
+            1,0,0,1,0,0,0,0,0,0,0,0,0,0,12,12,
+            1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+            
+        };
+        
+        CCScene *nivelScene = [Nivel sceneWithMatrix:matrix nivel:nivelActual+1 time:timer];
+        
+        [[CCDirector sharedDirector] replaceScene:[CCTransitionFade transitionWithDuration:0.5f scene:nivelScene]];
+    }
+    else {
+        CCScene *EndScene = [FinJuego sceneWithEnd:0 t:timer e:tengoEstrella];
+        [[CCDirector sharedDirector] replaceScene:[CCTransitionFade transitionWithDuration:0.5f scene:EndScene]];
+    }
 }
 
 
@@ -396,7 +472,6 @@
  */
 
 -(void)update:(ccTime)dt{
-    
     tiempoTotal += dt;
     tiempoActual = (int)tiempoTotal;
     if (timer < tiempoActual)

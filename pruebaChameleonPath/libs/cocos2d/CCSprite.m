@@ -541,7 +541,7 @@
 		ccp(quad_.tr.vertices.x,quad_.tr.vertices.y),
 	};
 	ccDrawPoly(vertices, 4, YES);
-#elif CC_SPRITE_DEBUG_DRAW == 2
+#elif CC_SPRITE_DEBUG_DRAW == 2	
 	// draw texture box
 	CGSize s = self.textureRect.size;
 	CGPoint offsetPix = self.offsetPosition;
