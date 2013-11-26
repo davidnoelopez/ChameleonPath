@@ -12,6 +12,12 @@
 // When you import this file, you import all the cocos2d classes
 #import "cocos2d.h"
 
+// Otras clases
+#import "Puntuacion.h"
+#import "Opciones.h"
+#import "SimpleAudioEngine.h"
+#import "Nivel.h"
+
 // HelloWorldLayer
 @interface HelloWorldLayer : CCLayer
 {

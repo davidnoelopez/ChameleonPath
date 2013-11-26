@@ -8,9 +8,6 @@
 //
 
 #import "Nivel.h"
-#import "HelloWorldLayer.h"
-#import "Pared.h"
-#import "FinJuego.h"
 
 @implementation Nivel
 

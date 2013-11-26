@@ -9,6 +9,9 @@
 #import <Foundation/Foundation.h>
 #import "cocos2d.h"
 
+#import "HelloWorldLayer.h"
+#import "Pared.h"
+#import "FinJuego.h"
 
 @interface Nivel : CCLayer {
     NSMutableArray *_tiles;

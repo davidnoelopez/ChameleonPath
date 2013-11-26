@@ -97,7 +97,7 @@
         NSString *documentsDirectory = [paths objectAtIndex:0];
         NSString *filePath = [documentsDirectory stringByAppendingPathComponent: @"highscores.plist"];
         
-        if([[NSFileManager defaultManager] fileExistsAtPath:filePath]){
+        if([[NSFileManager defaultManager] fileExistsAtPath:filePath]) {
             NSMutableArray *arreglo = [[NSMutableArray alloc] initWithContentsOfFile: filePath];
             [arreglo addObject:@(puntos)];
             
@@ -105,16 +105,11 @@
             NSSortDescriptor *highestToLowest = [NSSortDescriptor sortDescriptorWithKey:@"self" ascending:NO];
             [arreglo sortUsingDescriptors:[NSArray arrayWithObject:highestToLowest]];
             
-            //Para imprimir los High Scores
-            /*
-            for (int i = 0; i<10; i++) {
-                NSLog(@"%@ %d", arreglo[i], i);
-            }
-            */
-            
             //Escribe a plist.
             [arreglo writeToFile: filePath atomically:YES];
-        }else{
+        }
+        //highscore ya existia
+        else {
             pathPlist = [[NSBundle mainBundle] pathForResource:@"highscores base" ofType:@"plist"];
             puntuaciones = [[NSMutableArray alloc] initWithContentsOfFile:pathPlist];
             temp = [[NSMutableArray alloc] initWithArray:puntuaciones];
@@ -123,14 +118,6 @@
 
             NSSortDescriptor *highestToLowest = [NSSortDescriptor sortDescriptorWithKey:@"self" ascending:NO];
             [puntuaciones sortUsingDescriptors:[NSArray arrayWithObject:highestToLowest]];
-
-            // Para imprimir los High Scores
-            /*
-            for (int i = 0; i<temp.count; i++) {
-                [temp replaceObjectAtIndex:i withObject:puntuaciones[i]];
-                NSLog(@"%@ %d", temp[i], i);
-            }
-             */
 
             [temp writeToFile: filePath atomically:YES];
 

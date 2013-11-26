@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		5544C50C1831CE450096ECA4 /* Especial.m in Sources */ = {isa = PBXBuildFile; fileRef = 5544C50B1831CE450096ECA4 /* Especial.m */; };
 		5544C50F1831D1CF0096ECA4 /* FinJuego.m in Sources */ = {isa = PBXBuildFile; fileRef = 5544C50E1831D1CF0096ECA4 /* FinJuego.m */; };
 		5544C5111831E0B30096ECA4 /* Win.png in Resources */ = {isa = PBXBuildFile; fileRef = 5544C5101831E0B30096ECA4 /* Win.png */; };
 		5544C5131831E0BB0096ECA4 /* GameOver.png in Resources */ = {isa = PBXBuildFile; fileRef = 5544C5121831E0BB0096ECA4 /* GameOver.png */; };
@@ -176,8 +175,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		5544C50A1831CE450096ECA4 /* Especial.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Especial.h; sourceTree = "<group>"; };
-		5544C50B1831CE450096ECA4 /* Especial.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Especial.m; sourceTree = "<group>"; };
 		5544C50D1831D1CF0096ECA4 /* FinJuego.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FinJuego.h; sourceTree = "<group>"; };
 		5544C50E1831D1CF0096ECA4 /* FinJuego.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FinJuego.m; sourceTree = "<group>"; };
 		5544C5101831E0B30096ECA4 /* Win.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Win.png; path = Resources/Win.png; sourceTree = "<group>"; };
@@ -563,8 +560,6 @@
 				55A9736718276642004B696C /* Pared.m */,
 				55A9736918276C23004B696C /* Nivel.h */,
 				55A9736A18276C23004B696C /* Nivel.m */,
-				5544C50A1831CE450096ECA4 /* Especial.h */,
-				5544C50B1831CE450096ECA4 /* Especial.m */,
 				5544C50D1831D1CF0096ECA4 /* FinJuego.h */,
 				5544C50E1831D1CF0096ECA4 /* FinJuego.m */,
 			);
@@ -1121,7 +1116,6 @@
 				69F13696180B5CAE00FCFCF2 /* CCScene.m in Sources */,
 				69F13699180B5CAE00FCFCF2 /* CCScheduler.m in Sources */,
 				69F136A9180B5CAE00FCFCF2 /* CCShaderCache.m in Sources */,
-				5544C50C1831CE450096ECA4 /* Especial.m in Sources */,
 				69F136AC180B5CAE00FCFCF2 /* ccShaders.m in Sources */,
 				69F136AF180B5CAE00FCFCF2 /* CCSprite.m in Sources */,
 				69F136B2180B5CAE00FCFCF2 /* CCSpriteBatchNode.m in Sources */,

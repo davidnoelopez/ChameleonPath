@@ -7,9 +7,6 @@
 //
 
 #import "Opciones.h"
-#import "SimpleAudioEngine.h"
-#import "HelloWorldLayer.h"
-
 
 CCMenuItem *_soundOn;
 
@@ -105,6 +102,26 @@ CCMenuItem *_soundOn;
         [[SimpleAudioEngine sharedEngine] pauseBackgroundMusic];
         [defaults synchronize];
     }
+}
+
+- (void)borrarPuntuacion:(id)sender {
+    
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths objectAtIndex:0];
+    NSString *filePath = [documentsDirectory stringByAppendingPathComponent: @"highscores.plist"];
+    
+    NSString *pathPlist;
+    NSMutableArray *puntuaciones;
+    NSMutableArray *temp;
+    
+    pathPlist = [[NSBundle mainBundle] pathForResource:@"highscores base" ofType:@"plist"];
+    puntuaciones = [[NSMutableArray alloc] initWithContentsOfFile:pathPlist];
+    temp = [[NSMutableArray alloc] initWithArray:puntuaciones];
+    
+    NSSortDescriptor *highestToLowest = [NSSortDescriptor sortDescriptorWithKey:@"self" ascending:NO];
+    [puntuaciones sortUsingDescriptors:[NSArray arrayWithObject:highestToLowest]];
+    
+    [temp writeToFile: filePath atomically:YES];
 }
 
 

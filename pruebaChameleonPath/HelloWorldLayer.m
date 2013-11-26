@@ -13,11 +13,7 @@
 // Needed to obtain the Navigation Controller
 #import "AppDelegate.h"
 
-// Otras clases
-#import "Puntuacion.h"
-#import "Opciones.h"
-#import "SimpleAudioEngine.h"
-#import "Nivel.h"
+
 
 NSUserDefaults *defaults;
 
